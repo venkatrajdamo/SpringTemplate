@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  template_db:
+    container_name: template_db
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: ${TEMPLATE_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${TEMPLATE_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${TEMPLATE_POSTGRES_DB}
+    ports:
+      - "5433:5432"
+    volumes:
+      - template_data:/var/lib/postgresql/data
+
+  template_service:
+    container_name: template_service
+    build:
+      context: ../
+      dockerfile: /Service/Dockerfile
+    image: template-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - template_db
+    environment:
+      SPRING_DATASOURCE_URL: ${TEMPLATE_SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${TEMPLATE_SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${TEMPLATE_SPRING_DATASOURCE_PASSWORD}
+      SPRING_PROFILE: ${TEMPLATE_SPRING_PROFILE}
+
+volumes:
+  template_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${TEMPLATE_DATA_VOLUME}

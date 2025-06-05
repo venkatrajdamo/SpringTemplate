@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: template
+  datasource:
+    url: jdbc:postgresql://localhost:5433/template_db
+    username: template
+    password: template123
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
